@@ -6,6 +6,16 @@ import java.math.MathContext;
  */
 
 public class Complex {
+    public static void main(String[] args) {
+        Complex testNumber = new Complex(5.1, -4.7);
+        Complex secondNumber = new Complex(3, 2);
+        testNumber.testTrigExpForms();
+        testNumber.testAddition(secondNumber);
+        testNumber.testSubtraction(secondNumber);
+        testNumber.testMultiplication(secondNumber);
+        testNumber.testDivision(secondNumber);
+    }
+
     private double real;
     private double imagine;
     private static final int PRECISION = 4;
@@ -132,13 +142,4 @@ public class Complex {
         print("Result: ");
     }
 
-    public static void main(String[] args) {
-        Complex testNumber = new Complex(5.1, -4.7);
-        Complex secondNumber = new Complex(3, 2);
-        testNumber.testTrigExpForms();
-        testNumber.testAddition(secondNumber);
-        testNumber.testSubtraction(secondNumber);
-        testNumber.testMultiplication(secondNumber);
-        testNumber.testDivision(secondNumber);
-    }
 }
