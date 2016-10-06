@@ -6,27 +6,30 @@ import java.math.MathContext;
  */
 
 public class Complex {
-    double real;
-    double imagine;
-    public static final int PRECISION = 4;
+    private double real;
+    private double imagine;
+    private static final int PRECISION = 4;
 
-    Complex() {
+    private Complex() {
         real = 0;
         imagine = 0;
     }
 
-    Complex(Complex second) {
+    private Complex(Complex second) {
         real = second.real;
         imagine = second.imagine;
     }
 
-    Complex(double real, double imagine) {
+    private Complex(double real, double imagine) {
         this.real = real;
         this.imagine = imagine;
     }
 
     private void print(String someText) {
-        System.out.println(someText + real + "+i*" + imagine);
+        String sign = (imagine < 0) ? "-" : "+";
+        BigDecimal roundReal = round(real, PRECISION);
+        BigDecimal roundImagine = round(Math.abs(imagine), PRECISION);
+        System.out.println(someText + roundReal + sign + "i*" + roundImagine);
     }
 
     private double getModulus() {
@@ -46,9 +49,10 @@ public class Complex {
     }
 
     private void showTrigForm() {
+        String sign = (imagine < 0) ? "-" : "+";
         BigDecimal modulus = round(getModulus(), PRECISION);
         BigDecimal argument = round(getArgument(), PRECISION);
-        System.out.println(modulus + "*(cos(" + argument + ")+" + imagine + "*sin(" + argument + "))");
+        System.out.println(modulus + "*(cos(" + argument + ")" + sign + Math.abs(imagine) + "*sin(" + argument + "))");
     }
 
     private void showExponentialForm() {
@@ -69,7 +73,7 @@ public class Complex {
         return this;
     }
 
-    private Complex multiplicate(Complex secondNumber) {
+    private Complex multiply(Complex secondNumber) {
         double newReal = real * secondNumber.real - imagine * secondNumber.imagine;
         double newImagine = real * secondNumber.imagine + secondNumber.real * imagine;
         real = newReal;
@@ -77,33 +81,64 @@ public class Complex {
         return this;
     }
 
-    public Complex divide(Complex secondNumber) {
-        double denominator = Math.pow(secondNumber.imagine, 2) + Math.pow(secondNumber.real, 2);
-        double newReal = (real * secondNumber.real + imagine * secondNumber.imagine) / denominator;
-        double newImagine = (secondNumber.real * imagine - real * secondNumber.imagine) / denominator;
-        real = newReal;
-        imagine = newImagine;
+    private Complex divide(Complex secondNumber) {
+        try {
+            double denominator = Math.pow(secondNumber.imagine, 2) + Math.pow(secondNumber.real, 2);
+            double newReal = (real * secondNumber.real + imagine * secondNumber.imagine) / denominator;
+            double newImagine = (secondNumber.real * imagine - real * secondNumber.imagine) / denominator;
+            real = newReal;
+            imagine = newImagine;
+        } catch (Exception e) {
+            System.err.println("Zero division.");
+        }
         return this;
+    }
 
+    private void testTrigExpForms() {
+        print("Complex number: ");
+        showTrigForm();
+        showExponentialForm();
+    }
 
+    private void testAddition(Complex secondNumber) {
+        System.out.println("\nAddition");
+        print("First number: ");
+        secondNumber.print("Second number: ");
+        add(secondNumber);
+        print("Result: ");
+    }
+
+    private void testSubtraction(Complex secondNumber) {
+        System.out.println("\nSubtraction");
+        print("First number: ");
+        secondNumber.print("Second number: ");
+        subtract(secondNumber);
+        print("Result: ");
+    }
+
+    private void testMultiplication(Complex secondNumber) {
+        System.out.println("\nMultiplication");
+        print("First number: ");
+        secondNumber.print("Second number: ");
+        multiply(secondNumber);
+        print("Result: ");
+    }
+
+    private void testDivision(Complex secondNumber) {
+        System.out.println("\nDivision");
+        print("First number: ");
+        secondNumber.print("Second number: ");
+        divide(secondNumber);
+        print("Result: ");
     }
 
     public static void main(String[] args) {
-        Complex testNumber = new Complex(5.1, 4);
-        testNumber.print("");
-        testNumber.showTrigForm();
-        testNumber.showExponentialForm();
+        Complex testNumber = new Complex(5.1, -4.7);
         Complex secondNumber = new Complex(3, 2);
-        testNumber.add(secondNumber);
-        testNumber.print("plus ");
-        testNumber.subtract(secondNumber);
-        testNumber.print("First ");
-        secondNumber.print("Second ");
-        testNumber.multiplicate(secondNumber);
-        testNumber.print("Result ");
-        testNumber.print("First ");
-        secondNumber.print("Second ");
-        testNumber.divide(secondNumber);
-        testNumber.print("Dev Result");
+        testNumber.testTrigExpForms();
+        testNumber.testAddition(secondNumber);
+        testNumber.testSubtraction(secondNumber);
+        testNumber.testMultiplication(secondNumber);
+        testNumber.testDivision(secondNumber);
     }
 }
